@@ -1,0 +1,4 @@
+# Scripts write files locally. Ignore those files.
+github_repo_*
+gitlab_project_*
+*.txt
