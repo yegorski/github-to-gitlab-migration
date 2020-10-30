@@ -29,7 +29,16 @@ The Make targets are structured in the sequence they should be run. Follow the s
 
 ## 1. Prepare a list of all repositories that are to be migrated
 
-Get a GitHub token which has access to all GitHub orgs (and hence the repos in the orgs to migrate). In the exampe these step follow, we'll have 2 orgs:
+Get a GitHub token which has access to all GitHub orgs (and hence the repos in the orgs to migrate).
+
+1. Go to your GitHub profile's [Personal access tokens page][]
+1. Click `Generate new token`.
+1. Select the following permissions:
+   1. All of repo group
+   1. `read:org`
+1. Click Generate token and copy it.
+
+In the exampe these step follow, we'll have 2 orgs:
 
 1. my-public-org
 1. my-private-org
@@ -62,11 +71,22 @@ Output is stored in the `github_repo_names` folder.
       1. `export PUBLIC_GITLAB_ORG_ID=10`
       1. `export PRIVATE_GITLAB_ORG_ID=11`
 
+Add groups / subgroups where you want your migrated repos to live. A group serves 2 purposes:
+
+- Creates structure for nesting your projects.
+- Allocated members and permissions for the projects within the group.
+
+![gitlab_new_group](./files/gitlab_new_group.png)
+
 ## 3. Migrate the repositories
 
 GitLab does not have the functionality of migrating repos per org, so there's a bit of work involved when doing a mass migration, while keeping the repos separated appropriately.
 
 Navigate to GitLab's [Import repositories from GitHub][].
+
+1. Click New project
+1. Select GitHub on the Import project tab:
+![gitlab_import_from_github](./files/gitlab_import_from_github.png)
 
 Select the destination of all repos. This is done from the dropdown next to each repo.
 
@@ -89,7 +109,13 @@ For example, all repos in `my-public-org` GitHub org will be moved to the `migra
 
 ## 4. Update migrated repos to desired state
 
-The migration preserves the state of repositories, including their visibility status. In our use case, we wanted all migrated repos to be Public. Use GitLab API to update all repo's `visibility` property to be `public`. The following set of scripts accomplishes this.
+The migration preserves the state of repositories, including their visibility status. In our use case, we wanted all migrated repos to be Public. Use GitLab API to update all repo's `visibility` property.
+
+![gitlab_general_settings](./files/gitlab_general_settings.png)
+
+![gitlab_public_visibility](./files/gitlab_public_visibility.png)
+
+The following set of scripts accomplishes this.
 
 > Modify `check-all-gitlab-projects-visibility` function to add more for loops for each GitLab org.
 
@@ -160,6 +186,9 @@ The last step is to make sure that no new repos are added to GitHub. This is don
 1. Navigating to `/settings/member_privileges` page of each GitHub org.
 2. Disabling `Repository creation` and `Repository forking` options.
 
+![github_disable_forking](./files/github_disable_forking.png)
+
 [application settings]: https://gitlab.com/admin/application_settings
 [gitlab issue 40953]: https://gitlab.com/gitlab-org/gitlab-ce/issues/40953
 [import repositories from github]: https://gitlab.com/import/github/status
+[personal access tokens page]: https://github.com/settings/tokens
